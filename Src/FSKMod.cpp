@@ -289,7 +289,6 @@ void FSKMod::modulateRisingEdge(void)
 		{
 			writeWord(tuningWords[channel][i][j]);
 			delay();
-			delay();
 		}
 
 		updateFreq();
