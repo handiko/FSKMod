@@ -21,24 +21,6 @@
 #define MAX_SPS 8
 #define LOAD_CYCLE 5
 
-#define TA_1 3864816818
-#define TA_2 3864817759
-#define TA_3 3864825542
-#define TA_4 3864853077
-#define TA_5 3864895002
-#define TA_6 3864922537
-#define TA_7 3864930320
-#define TA_8 3864931261
-
-#define TB_1 3866009865
-#define TB_2 3866010806
-#define TB_3 3866018588
-#define TB_4 3866046124
-#define TB_5 3866088049
-#define TB_6 3866115584
-#define TB_7 3866123367
-#define TB_8 3866124308
-
 #define DDS_CLOCK 180000000UL
 #define DDS_CONST 4294967296ULL
 
@@ -93,8 +75,8 @@ private:
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
-			DDS_CLOCK - 161975000UL,
-			DDS_CLOCK - 161025000UL
+			(DDS_CLOCK - 161975000UL),
+			(DDS_CLOCK - 161025000UL)
 	};
 
 	void initGPIOClock(void);
