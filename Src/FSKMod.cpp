@@ -117,19 +117,19 @@ void FSKMod::delay(void)
 {
 	if(sps < 2)
 	{
-		delayPrimitive(7);
+		delayPrimitive(1);
 	}
 	else if(sps < 4)
 	{
-		delayPrimitive(7);
+		delayPrimitive(1);
 	}
 	else if(sps < 8)
 	{
-		delayPrimitive(7);
+		delayPrimitive(1);
 	}
 	else
 	{
-		delayPrimitive(7);
+		delayPrimitive(1);
 	}
 }
 
