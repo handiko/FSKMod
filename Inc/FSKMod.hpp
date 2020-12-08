@@ -22,6 +22,9 @@
 #define DDS_CLOCK 180000000UL
 #define DDS_CONST 4294967296ULL
 
+#define LED_ON 1
+#define LED_OFF 0
+
 class FSKMod {
 private:
 	int sps = 1;
@@ -58,17 +61,15 @@ private:
 	uint16_t fupPin;
 	uint16_t clkPin;
 
-	// TODO not implemented yet
 	GPIO_TypeDef* ledTxPort;
 	GPIO_TypeDef* ledDataPort;
-	GPIO_TypeDef* ledCHAPort;
-	GPIO_TypeDef* ledCHBPort;
+	GPIO_TypeDef* ledChaPort;
+	GPIO_TypeDef* ledChbPort;
 
-	// TODO not implemented yet
 	uint16_t ledTxPin;
 	uint16_t ledDataPin;
-	uint16_t ledCHAPin;
-	uint16_t ledCHBPin;
+	uint16_t ledChaPin;
+	uint16_t ledChbPin;
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
@@ -91,6 +92,10 @@ private:
 	void initIdleWord(void);
 	void initWord(bool setChannel);
 
+	void setLed(GPIO_TypeDef* ledPort, uint16_t ledPin, bool LED_STATE);
+	void setChaLed(bool LED_STATE);
+	void setChbLed(bool LED_STATE);
+
 public:
 	FSKMod();
 
@@ -98,6 +103,8 @@ public:
 	void setOutputPort(GPIO_TypeDef* dataPort, GPIO_TypeDef* rstPort, GPIO_TypeDef* fupPort, GPIO_TypeDef* clkPort);
 	void setInputPin(uint16_t bitsPin, uint16_t pttPin, uint16_t freqPin);
 	void setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, uint16_t clkPin);
+	void setLEDPort(GPIO_TypeDef* ledTxPort, GPIO_TypeDef* ledDataPort, GPIO_TypeDef* ledChaPort, GPIO_TypeDef* ledChbPort);
+	void setLEDPin(uint16_t ledTxPin, uint16_t ledDataPin, uint16_t ledChaPin, uint16_t ledChbPin);
 
 	void reset(void);
 
@@ -105,6 +112,7 @@ public:
 	void setPTT(bool pttState);
 	bool getPTTState(void);
 	void setChannel(bool channel);
+	bool getChannel(void);
 	void modulateRisingEdge(void);
 	void modulateFallingEdge(void);
 	void idleState(void);
@@ -112,6 +120,10 @@ public:
 	void setIdleFreq(uint32_t freq);
 	void setChAFreq(uint32_t freqA);
 	void setChBFreq(uint32_t freqB);
+
+	void setTxLed(void);
+	void setDataLed(bool LED_STATE);
+	void setChannelLed(void);
 
 	virtual ~FSKMod();
 };

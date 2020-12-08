@@ -47,9 +47,15 @@ void FSKMod::initGPIOOutputLevel(void)
 	HAL_GPIO_WritePin(dataPort, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
 	            	|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7,
 					GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(rstPort, rstPin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(fupPort, fupPin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(clkPort, clkPin, GPIO_PIN_RESET);
+
+	rstPort->BRR = rstPin;
+	fupPort->BRR = rstPin;
+	clkPort->BRR = clkPin;
+
+	ledTxPort->BRR = ledTxPin;
+	ledDataPort->BRR = ledDataPin;
+	ledChaPort->BRR = ledChaPin;
+	ledChbPort->BRR = ledChbPin;
 }
 
 void FSKMod::initConfigGPIOPinsOutput(void)
@@ -92,6 +98,30 @@ void FSKMod::initConfigGPIOPinsOutput(void)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 #endif
 	HAL_GPIO_Init(dataPort, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = ledTxPin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(ledTxPort, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = ledDataPin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(ledDataPort, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = ledChaPin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(ledChaPort, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = ledChbPin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(ledChbPort, &GPIO_InitStruct);
 }
 
 void FSKMod::initConfigGPIOPinsInput(void)
@@ -211,6 +241,28 @@ void FSKMod::initWord(bool setChannel)
 	}
 }
 
+void FSKMod::setLed(GPIO_TypeDef* ledPort, uint16_t ledPin, bool LED_STATE)
+{
+	if(LED_STATE == LED_ON)
+	{
+		ledPort->BSRR = ledPin;
+	}
+	else
+	{
+		ledPort->BRR = ledPin;
+	}
+}
+
+void FSKMod::setChaLed(bool LED_STATE)
+{
+	setLed(ledChaPort, ledChaPin, LED_STATE);
+}
+
+void FSKMod::setChbLed(bool LED_STATE)
+{
+	setLed(ledChbPort, ledChbPin, LED_STATE);
+}
+
 /*
  * Public methods
  */
@@ -253,8 +305,30 @@ void FSKMod::setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, ui
 	reset();
 }
 
+void FSKMod::setLEDPort(GPIO_TypeDef* ledTxPort, GPIO_TypeDef* ledDataPort, GPIO_TypeDef* ledChaPort, GPIO_TypeDef* ledChbPort)
+{
+	this->ledTxPort = ledTxPort;
+	this->ledDataPort = ledDataPort;
+	this->ledChaPort = ledChaPort;
+	this->ledChbPort = ledChbPort;
+
+	reset();
+}
+
+void FSKMod::setLEDPin(uint16_t ledTxPin, uint16_t ledDataPin, uint16_t ledChaPin, uint16_t ledChbPin)
+{
+	this->ledTxPin = ledTxPin;
+	this->ledDataPin = ledDataPin;
+	this->ledChaPin = ledChaPin;
+	this->ledChbPin = ledChbPin;
+
+	reset();
+}
+
 void FSKMod::reset(void)
 {
+	setPTT(RECEIVE_STATE);
+
 	init();
 
 	fupPort->ODR &= ~(fupPin);
@@ -270,6 +344,11 @@ void FSKMod::reset(void)
 
 	HAL_GPIO_TogglePin(fupPort, fupPin);
 	HAL_GPIO_TogglePin(fupPort, fupPin);
+
+	ledTxPort->BRR = ledTxPin;
+	ledDataPort->BRR = ledDataPin;
+	ledChaPort->BRR = ledChaPin;
+	ledChbPort->BRR = ledChbPin;
 }
 
 void FSKMod::setSamplePerSymbol(int newsps)
@@ -305,6 +384,11 @@ bool FSKMod::getPTTState(void)
 void FSKMod::setChannel(bool channel)
 {
 	this->channel = channel;
+}
+
+bool FSKMod::getChannel(void)
+{
+	return channel;
 }
 
 void FSKMod::modulateRisingEdge(void)
@@ -369,6 +453,39 @@ void FSKMod::setChBFreq(uint32_t freqB)
 	freqCh[CHANNEL_B] = DDS_CLOCK - freqB;
 
 	initWord(CHANNEL_B);
+}
+
+void FSKMod::setTxLed(void)
+{
+	if(pttState == TRANSMIT_STATE)
+	{
+		setLed(ledTxPort, ledTxPin, LED_ON);
+	}
+	else
+	{
+		setLed(ledTxPort, ledTxPin, LED_OFF);
+	}
+}
+
+void FSKMod::setDataLed(bool LED_STATE)
+{
+	setLed(ledDataPort, ledDataPin, LED_STATE);
+}
+
+void FSKMod::setChannelLed(void)
+{
+	if(pttState == TRANSMIT_STATE)
+	{
+		if(channel == CHANNEL_A)
+			setChaLed(LED_ON);
+		else
+			setChbLed(LED_ON);
+	}
+	else
+	{
+		setChaLed(LED_OFF);
+		setChaLed(LED_OFF);
+	}
 }
 
 FSKMod::~FSKMod() {
