@@ -386,11 +386,6 @@ void FSKMod::setChannel(bool channel)
 	this->channel = channel;
 }
 
-bool FSKMod::getChannel(void)
-{
-	return channel;
-}
-
 void FSKMod::modulateRisingEdge(void)
 {
 	uint8_t inc = MAX_SPS/sps;

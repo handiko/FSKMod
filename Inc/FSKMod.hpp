@@ -112,7 +112,6 @@ public:
 	void setPTT(bool pttState);
 	bool getPTTState(void);
 	void setChannel(bool channel);
-	bool getChannel(void);
 	void modulateRisingEdge(void);
 	void modulateFallingEdge(void);
 	void idleState(void);
