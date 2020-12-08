@@ -8,8 +8,6 @@
 #ifndef INC_FSKMOD_HPP_
 #define INC_FSKMOD_HPP_
 
-#include "stm32g0xx.h"
-#include "stm32g0xx_hal.h"
 #include "main.h"
 
 #define RECEIVE_STATE 1
@@ -25,7 +23,6 @@
 #define DDS_CONST 4294967296ULL
 
 class FSKMod {
-
 private:
 	int sps = 1;
 	bool pttState = RECEIVE_STATE;
@@ -43,29 +40,29 @@ private:
 			0.499578530318103
 	};
 
-	GPIO_TypeDef* bitsPort = GPIOC;
-	GPIO_TypeDef* pttPort = GPIOB;
-	GPIO_TypeDef* freqPort = GPIOB;
+	GPIO_TypeDef* bitsPort;
+	GPIO_TypeDef* pttPort;
+	GPIO_TypeDef* freqPort;
 
-	GPIO_TypeDef* dataPort = GPIOA;
-	GPIO_TypeDef* rstPort = GPIOC;
-	GPIO_TypeDef* fupPort = GPIOC;
-	GPIO_TypeDef* clkPort = GPIOC;
+	GPIO_TypeDef* dataPort;
+	GPIO_TypeDef* rstPort;
+	GPIO_TypeDef* fupPort;
+	GPIO_TypeDef* clkPort;
+
+	uint16_t bitsPin;
+	uint16_t pttPin;
+	uint16_t freqPin;
+
+	uint16_t dataPin;
+	uint16_t rstPin;
+	uint16_t fupPin;
+	uint16_t clkPin;
 
 	// TODO not implemented yet
 	GPIO_TypeDef* ledTxPort;
 	GPIO_TypeDef* ledDataPort;
 	GPIO_TypeDef* ledCHAPort;
 	GPIO_TypeDef* ledCHBPort;
-
-	uint16_t bitsPin = BITS_Pin;
-	uint16_t pttPin = PTT_Pin;
-	uint16_t freqPin = FREQ_Pin;
-
-	uint16_t dataPin = DATA_Pin;
-	uint16_t rstPin = RST_Pin;
-	uint16_t fupPin = FUP_Pin;
-	uint16_t clkPin = CLK_Pin;
 
 	// TODO not implemented yet
 	uint16_t ledTxPin;
@@ -83,7 +80,7 @@ private:
 	void initGPIOOutputLevel(void);
 	void initConfigGPIOPinsOutput(void);
 	void initConfigGPIOPinsInput(void);
-	void initNVICInterrupt(void);
+	//void initNVICInterrupt(void);
 	void init(void);
 	void delayPrimitive(uint32_t del);
 	void delay(void);
