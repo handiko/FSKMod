@@ -25,6 +25,39 @@
 #define LED_ON 1
 #define LED_OFF 0
 
+struct InputPorts_t {
+	GPIO_TypeDef* bitsPort;
+	GPIO_TypeDef* freqPort;
+	GPIO_TypeDef* pttPort;
+
+	uint16_t bitsPin;
+	uint16_t freqPin;
+	uint16_t pttPin;
+};
+
+struct OutputPorts_t {
+	GPIO_TypeDef* dataPort;
+	GPIO_TypeDef* clkPort;
+	GPIO_TypeDef* rstPort;
+	GPIO_TypeDef* fupPort;
+
+	uint16_t clkPin;
+	uint16_t rstPin;
+	uint16_t fupPin;
+};
+
+struct LedPorts_t {
+	GPIO_TypeDef* ledTxPort;
+	GPIO_TypeDef* ledDataPort;
+	GPIO_TypeDef* ledChaPort;
+	GPIO_TypeDef* ledChbPort;
+
+	uint16_t ledTxPin;
+	uint16_t ledDataPin;
+	uint16_t ledChaPin;
+	uint16_t ledChbPin;
+};
+
 class FSKMod {
 private:
 	int sps = 1;
@@ -43,33 +76,9 @@ private:
 			0.499578530318103
 	};
 
-	GPIO_TypeDef* bitsPort;
-	GPIO_TypeDef* pttPort;
-	GPIO_TypeDef* freqPort;
-
-	GPIO_TypeDef* dataPort;
-	GPIO_TypeDef* rstPort;
-	GPIO_TypeDef* fupPort;
-	GPIO_TypeDef* clkPort;
-
-	uint16_t bitsPin;
-	uint16_t pttPin;
-	uint16_t freqPin;
-
-	uint16_t dataPin;
-	uint16_t rstPin;
-	uint16_t fupPin;
-	uint16_t clkPin;
-
-	GPIO_TypeDef* ledTxPort;
-	GPIO_TypeDef* ledDataPort;
-	GPIO_TypeDef* ledChaPort;
-	GPIO_TypeDef* ledChbPort;
-
-	uint16_t ledTxPin;
-	uint16_t ledDataPin;
-	uint16_t ledChaPin;
-	uint16_t ledChbPin;
+	InputPorts_t* inputPorts;
+	OutputPorts_t* outputPorts;
+	LedPorts_t* ledPorts;
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
@@ -81,7 +90,7 @@ private:
 	void initGPIOOutputLevel(void);
 	void initConfigGPIOPinsOutput(void);
 	void initConfigGPIOPinsInput(void);
-	//void initNVICInterrupt(void);
+
 	void init(void);
 	void delayPrimitive(uint32_t del);
 	void delay(void);
@@ -92,19 +101,11 @@ private:
 	void initIdleWord(void);
 	void initWord(bool setChannel);
 
-	void setLed(GPIO_TypeDef* ledPort, uint16_t ledPin, bool LED_STATE);
-	void setChaLed(bool LED_STATE);
-	void setChbLed(bool LED_STATE);
-
 public:
 	FSKMod();
 
-	void setInputPort(GPIO_TypeDef* bitsPort, GPIO_TypeDef* pttPort, GPIO_TypeDef* freqPort);
-	void setOutputPort(GPIO_TypeDef* dataPort, GPIO_TypeDef* rstPort, GPIO_TypeDef* fupPort, GPIO_TypeDef* clkPort);
-	void setInputPin(uint16_t bitsPin, uint16_t pttPin, uint16_t freqPin);
-	void setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, uint16_t clkPin);
-	void setLEDPort(GPIO_TypeDef* ledTxPort, GPIO_TypeDef* ledDataPort, GPIO_TypeDef* ledChaPort, GPIO_TypeDef* ledChbPort);
-	void setLEDPin(uint16_t ledTxPin, uint16_t ledDataPin, uint16_t ledChaPin, uint16_t ledChbPin);
+	void setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts, LedPorts_t* ledPorts);
+	void setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts);
 
 	void reset(void);
 
