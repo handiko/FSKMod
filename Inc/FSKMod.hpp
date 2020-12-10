@@ -22,6 +22,40 @@
 #define DDS_CLOCK 180000000UL
 #define DDS_CONST 4294967296ULL
 
+struct InputPorts_t {
+	GPIO_TypeDef* bitsPort;
+	GPIO_TypeDef* pttPort;
+	GPIO_TypeDef* freqPort;
+
+	uint16_t bitsPin;
+	uint16_t pttPin;
+	uint16_t freqPin;
+};
+
+struct OutputPorts_t {
+	GPIO_TypeDef* dataPort;
+	GPIO_TypeDef* rstPort;
+	GPIO_TypeDef* fupPort;
+	GPIO_TypeDef* clkPort;
+
+	uint16_t dataPin = DATA_Pin;
+	uint16_t rstPin = RST_Pin;
+	uint16_t fupPin = FUP_Pin;
+	uint16_t clkPin = CLK_Pin;
+};
+
+struct LedPorts_t {
+	GPIO_TypeDef* ledTxPort;
+	GPIO_TypeDef* ledDataPort;
+	GPIO_TypeDef* ledCHAPort;
+	GPIO_TypeDef* ledCHBPort;
+
+	uint16_t ledTxPin;
+	uint16_t ledDataPin;
+	uint16_t ledCHAPin;
+	uint16_t ledCHBPin;
+};
+
 class FSKMod {
 private:
 	int sps = 1;
@@ -39,6 +73,9 @@ private:
 			0.491362863918766,
 			0.499578530318103
 	};
+
+	InputPorts_t inputPorts;
+	OutputPorts_t outputPorts;
 
 	GPIO_TypeDef* bitsPort = GPIOC;
 	GPIO_TypeDef* pttPort = GPIOB;
@@ -94,10 +131,15 @@ private:
 public:
 	FSKMod();
 
+	void setInputPorts(InputPorts_t inputPorts);
+	void setOutputPorts(OutputPorts_t outputPorts);
+
+	/*
 	void setInputPort(GPIO_TypeDef* bitsPort, GPIO_TypeDef* pttPort, GPIO_TypeDef* freqPort);
 	void setOutputPort(GPIO_TypeDef* dataPort, GPIO_TypeDef* rstPort, GPIO_TypeDef* fupPort, GPIO_TypeDef* clkPort);
 	void setInputPin(uint16_t bitsPin, uint16_t pttPin, uint16_t freqPin);
 	void setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, uint16_t clkPin);
+	*/
 
 	void reset(void);
 

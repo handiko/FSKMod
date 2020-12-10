@@ -187,6 +187,36 @@ void FSKMod::initWord(bool setChannel)
  * Public methods
  */
 
+void FSKMod::setInputPorts(InputPorts_t inputPorts)
+{
+	//this->inputPorts = inputPorts;
+	this->bitsPort = inputPorts.bitsPort;
+	this->pttPort = inputPorts.pttPort;
+	this->freqPort = inputPorts.freqPort;
+
+	this->bitsPin = inputPorts.bitsPin;
+	this->pttPin = inputPorts.pttPin;
+	this->freqPin = inputPorts.freqPin;
+
+	init();
+}
+
+void FSKMod::setOutputPorts(OutputPorts_t outputPorts)
+{
+	//this->outputPorts = outputPorts;
+	this->dataPort = outputPorts.dataPort;
+	this->rstPort = outputPorts.rstPort;
+	this->fupPort = outputPorts.fupPort;
+	this->clkPort = outputPorts.clkPort;
+
+	this->rstPin = outputPorts.rstPin;
+	this->fupPin = outputPorts.fupPin;
+	this->clkPin = outputPorts.clkPin;
+
+	reset();
+}
+
+/*
 void FSKMod::setInputPort(GPIO_TypeDef* bitsPort, GPIO_TypeDef* pttPort, GPIO_TypeDef* freqPort)
 {
 	this->bitsPort = bitsPort;
@@ -224,6 +254,7 @@ void FSKMod::setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, ui
 
 	reset();
 }
+*/
 
 void FSKMod::reset(void)
 {
