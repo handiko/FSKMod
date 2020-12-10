@@ -62,30 +62,27 @@ void FSKMod::initConfigGPIOPinsOutput(void)
 	GPIO_InitStruct.Pin = outputPorts.rstPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#elif
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #endif
 	HAL_GPIO_Init(outputPorts.rstPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = outputPorts.fupPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#elif
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #endif
 	HAL_GPIO_Init(outputPorts.fupPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = outputPorts.clkPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#elif
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #endif
 	HAL_GPIO_Init(outputPorts.clkPort, &GPIO_InitStruct);
 
@@ -93,10 +90,9 @@ void FSKMod::initConfigGPIOPinsOutput(void)
 		        		|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#elif
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #endif
 	HAL_GPIO_Init(outputPorts.dataPort, &GPIO_InitStruct);
 }
