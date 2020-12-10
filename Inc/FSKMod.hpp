@@ -23,7 +23,6 @@
 #define DDS_CONST 4294967296ULL
 
 class FSKMod {
-
 private:
 	int sps = 1;
 	bool pttState = RECEIVE_STATE;
