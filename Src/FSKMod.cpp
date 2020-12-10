@@ -49,44 +49,42 @@ void FSKMod::initGPIOClock(void)
 
 void FSKMod::initGPIOOutputLevel(void)
 {
-	HAL_GPIO_WritePin(dataPort, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
-	            	|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7,
-					GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(rstPort, rstPin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(fupPort, fupPin, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(clkPort, clkPin, GPIO_PIN_RESET);
+	outputPorts.dataPort->ODR &= ~(GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
+        						|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7);
+	outputPorts.rstPort->BRR = outputPorts.rstPin;
+	outputPorts.clkPort->BRR = outputPorts.clkPin;
 }
 
 void FSKMod::initConfigGPIOPinsOutput(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-	GPIO_InitStruct.Pin = rstPin;
+	GPIO_InitStruct.Pin = outputPorts.rstPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 #endif
-	HAL_GPIO_Init(rstPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(outputPorts.rstPort, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = fupPin;
+	GPIO_InitStruct.Pin = outputPorts.fupPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 #endif
-	HAL_GPIO_Init(fupPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(outputPorts.fupPort, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = clkPin;
+	GPIO_InitStruct.Pin = outputPorts.clkPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 #endif
-	HAL_GPIO_Init(clkPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(outputPorts.clkPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
 		        		|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
@@ -96,27 +94,27 @@ void FSKMod::initConfigGPIOPinsOutput(void)
 #if defined(GPIO_SPEED_FREQ_VERY_HIGH)
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 #endif
-	HAL_GPIO_Init(dataPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(outputPorts.dataPort, &GPIO_InitStruct);
 }
 
 void FSKMod::initConfigGPIOPinsInput(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-	GPIO_InitStruct.Pin = freqPin;
+	GPIO_InitStruct.Pin = inputPorts.freqPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(freqPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(inputPorts.freqPort, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = pttPin;
+	GPIO_InitStruct.Pin = inputPorts.pttPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(pttPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(inputPorts.pttPort, &GPIO_InitStruct);
 
-	GPIO_InitStruct.Pin = bitsPin;
+	GPIO_InitStruct.Pin = inputPorts.bitsPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(bitsPort, &GPIO_InitStruct);
+	HAL_GPIO_Init(inputPorts.bitsPort, &GPIO_InitStruct);
 }
 
 void FSKMod::initNVICInterrupt(void)
@@ -166,24 +164,24 @@ void FSKMod::delay(void)
 
 inline void FSKMod::writeWord(uint8_t word)
 {
-	dataPort->BSRR = ((uint32_t)word) + (~(((uint32_t)word) << 16));
-	clkPort->ODR ^= clkPin;
+	outputPorts.dataPort->BSRR = ((uint32_t)word) + (~(((uint32_t)word) << 16));
+	outputPorts.clkPort->ODR ^= outputPorts.clkPin;
 	delay();
-	clkPort->ODR ^= clkPin;
+	outputPorts.clkPort->ODR ^= outputPorts.clkPin;
 }
 
 inline void FSKMod::updateFreq(void)
 {
-	fupPort->ODR ^= fupPin;
+	outputPorts.fupPort->ODR ^= outputPorts.fupPin;
 	delay();
-	fupPort->ODR ^= fupPin;
+	outputPorts.fupPort->ODR ^= outputPorts.fupPin;
 }
 
 inline bool FSKMod::readInitPTTState(void)
 {
 	// TODO return inverted for testing
 
-	return !((pttPort->IDR & pttPin) != 0x00u ? 1 : 0);
+	return !((inputPorts.pttPort->IDR & inputPorts.pttPin) != 0x00u ? 1 : 0);
 }
 
 void FSKMod::initIdleWord(void)
@@ -220,90 +218,35 @@ void FSKMod::initWord(bool setChannel)
 
 void FSKMod::setInputPorts(InputPorts_t inputPorts)
 {
-	//this->inputPorts = inputPorts;
-	this->bitsPort = inputPorts.bitsPort;
-	this->pttPort = inputPorts.pttPort;
-	this->freqPort = inputPorts.freqPort;
-
-	this->bitsPin = inputPorts.bitsPin;
-	this->pttPin = inputPorts.pttPin;
-	this->freqPin = inputPorts.freqPin;
+	this->inputPorts = inputPorts;
 
 	init();
 }
 
 void FSKMod::setOutputPorts(OutputPorts_t outputPorts)
 {
-	//this->outputPorts = outputPorts;
-	this->dataPort = outputPorts.dataPort;
-	this->rstPort = outputPorts.rstPort;
-	this->fupPort = outputPorts.fupPort;
-	this->clkPort = outputPorts.clkPort;
-
-	this->rstPin = outputPorts.rstPin;
-	this->fupPin = outputPorts.fupPin;
-	this->clkPin = outputPorts.clkPin;
+	this->outputPorts = outputPorts;
 
 	reset();
 }
-
-/*
-void FSKMod::setInputPort(GPIO_TypeDef* bitsPort, GPIO_TypeDef* pttPort, GPIO_TypeDef* freqPort)
-{
-	this->bitsPort = bitsPort;
-	this->pttPort = pttPort;
-	this->freqPort = freqPort;
-
-	reset();
-}
-
-void FSKMod::setOutputPort(GPIO_TypeDef* dataPort, GPIO_TypeDef* rstPort, GPIO_TypeDef* fupPort, GPIO_TypeDef* clkPort)
-{
-	this->dataPort = dataPort;
-	this->rstPort = rstPort;
-	this->fupPort = fupPort;
-	this->clkPort = clkPort;
-
-	reset();
-}
-
-void FSKMod::setInputPin(uint16_t bitsPin, uint16_t pttPin, uint16_t freqPin)
-{
-	this->bitsPin = bitsPin;
-	this->pttPin = pttPin;
-	this->freqPin = freqPin;
-
-	reset();
-}
-
-void FSKMod::setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, uint16_t clkPin)
-{
-	this->dataPin = dataPin;
-	this->rstPin = rstPin;
-	this->fupPin = fupPin;
-	this->clkPin = clkPin;
-
-	reset();
-}
-*/
 
 void FSKMod::reset(void)
 {
 	init();
 
-	fupPort->ODR &= ~(fupPin);
-	clkPort->ODR &= ~(clkPin);
+	outputPorts.fupPort->ODR &= ~(outputPorts.fupPin);
+	outputPorts.clkPort->ODR &= ~(outputPorts.clkPin);
 
-	HAL_GPIO_TogglePin(rstPort, rstPin);
-	HAL_GPIO_TogglePin(rstPort, rstPin);
+	HAL_GPIO_TogglePin(outputPorts.rstPort, outputPorts.rstPin);
+	HAL_GPIO_TogglePin(outputPorts.rstPort, outputPorts.rstPin);
 
-	dataPort->ODR &= ~(0xFF);
+	outputPorts.dataPort->ODR &= ~(0xFF);
 
-	HAL_GPIO_TogglePin(clkPort, clkPin);
-	HAL_GPIO_TogglePin(clkPort, clkPin);
+	HAL_GPIO_TogglePin(outputPorts.clkPort, outputPorts.clkPin);
+	HAL_GPIO_TogglePin(outputPorts.clkPort, outputPorts.clkPin);
 
-	HAL_GPIO_TogglePin(fupPort, fupPin);
-	HAL_GPIO_TogglePin(fupPort, fupPin);
+	HAL_GPIO_TogglePin(outputPorts.fupPort, outputPorts.fupPin);
+	HAL_GPIO_TogglePin(outputPorts.fupPort, outputPorts.fupPin);
 }
 
 void FSKMod::setSamplePerSymbol(int newsps)

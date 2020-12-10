@@ -38,12 +38,13 @@ struct OutputPorts_t {
 	GPIO_TypeDef* fupPort;
 	GPIO_TypeDef* clkPort;
 
-	uint16_t dataPin = DATA_Pin;
-	uint16_t rstPin = RST_Pin;
-	uint16_t fupPin = FUP_Pin;
-	uint16_t clkPin = CLK_Pin;
+	uint16_t dataPin;
+	uint16_t rstPin;
+	uint16_t fupPin;
+	uint16_t clkPin;
 };
 
+// TODO not implemented yet
 struct LedPorts_t {
 	GPIO_TypeDef* ledTxPort;
 	GPIO_TypeDef* ledDataPort;
@@ -77,36 +78,6 @@ private:
 	InputPorts_t inputPorts;
 	OutputPorts_t outputPorts;
 
-	GPIO_TypeDef* bitsPort = GPIOC;
-	GPIO_TypeDef* pttPort = GPIOB;
-	GPIO_TypeDef* freqPort = GPIOB;
-
-	GPIO_TypeDef* dataPort = GPIOA;
-	GPIO_TypeDef* rstPort = GPIOC;
-	GPIO_TypeDef* fupPort = GPIOC;
-	GPIO_TypeDef* clkPort = GPIOC;
-
-	// TODO not implemented yet
-	GPIO_TypeDef* ledTxPort;
-	GPIO_TypeDef* ledDataPort;
-	GPIO_TypeDef* ledCHAPort;
-	GPIO_TypeDef* ledCHBPort;
-
-	uint16_t bitsPin = BITS_Pin;
-	uint16_t pttPin = PTT_Pin;
-	uint16_t freqPin = FREQ_Pin;
-
-	uint16_t dataPin = DATA_Pin;
-	uint16_t rstPin = RST_Pin;
-	uint16_t fupPin = FUP_Pin;
-	uint16_t clkPin = CLK_Pin;
-
-	// TODO not implemented yet
-	uint16_t ledTxPin;
-	uint16_t ledDataPin;
-	uint16_t ledCHAPin;
-	uint16_t ledCHBPin;
-
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
 			(DDS_CLOCK - 161975000UL),
@@ -133,13 +104,6 @@ public:
 
 	void setInputPorts(InputPorts_t inputPorts);
 	void setOutputPorts(OutputPorts_t outputPorts);
-
-	/*
-	void setInputPort(GPIO_TypeDef* bitsPort, GPIO_TypeDef* pttPort, GPIO_TypeDef* freqPort);
-	void setOutputPort(GPIO_TypeDef* dataPort, GPIO_TypeDef* rstPort, GPIO_TypeDef* fupPort, GPIO_TypeDef* clkPort);
-	void setInputPin(uint16_t bitsPin, uint16_t pttPin, uint16_t freqPin);
-	void setOutputPin(uint16_t dataPin, uint16_t rstPin, uint16_t fupPin, uint16_t clkPin);
-	*/
 
 	void reset(void);
 
