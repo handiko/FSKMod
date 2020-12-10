@@ -9,8 +9,6 @@
 #define INC_FSKMOD_HPP_
 
 #include "main.h"
-#include "stm32g0xx.h"
-#include "stm32g0xx_hal.h"
 
 #define RECEIVE_STATE 1
 #define TRANSMIT_STATE 0
@@ -24,40 +22,44 @@
 #define DDS_CLOCK 180000000UL
 #define DDS_CONST 4294967296ULL
 
-#define LED_ON 1
-#define LED_OFF 0
-
 struct InputPorts_t {
 	GPIO_TypeDef* bitsPort;
-	GPIO_TypeDef* freqPort;
 	GPIO_TypeDef* pttPort;
+	GPIO_TypeDef* freqPort;
 
 	uint16_t bitsPin;
-	uint16_t freqPin;
 	uint16_t pttPin;
+	uint16_t freqPin;
 };
 
 struct OutputPorts_t {
 	GPIO_TypeDef* dataPort;
-	GPIO_TypeDef* clkPort;
 	GPIO_TypeDef* rstPort;
 	GPIO_TypeDef* fupPort;
+	GPIO_TypeDef* clkPort;
 
-	uint16_t clkPin;
+	uint16_t dataPin;
 	uint16_t rstPin;
 	uint16_t fupPin;
+	uint16_t clkPin;
 };
 
+// TODO not implemented yet
 struct LedPorts_t {
 	GPIO_TypeDef* ledTxPort;
 	GPIO_TypeDef* ledDataPort;
-	GPIO_TypeDef* ledChaPort;
-	GPIO_TypeDef* ledChbPort;
+	GPIO_TypeDef* ledCHAPort;
+	GPIO_TypeDef* ledCHBPort;
 
 	uint16_t ledTxPin;
 	uint16_t ledDataPin;
-	uint16_t ledChaPin;
-	uint16_t ledChbPin;
+	uint16_t ledCHAPin;
+	uint16_t ledCHBPin;
+};
+
+struct IRQs_t {
+	IRQn_Type bitsIRQ;
+	IRQn_Type pttIRQ;
 };
 
 class FSKMod {
@@ -80,7 +82,8 @@ private:
 
 	InputPorts_t inputPorts;
 	OutputPorts_t outputPorts;
-	LedPorts_t ledPorts;
+
+	IRQs_t interrupts;
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
@@ -106,8 +109,9 @@ private:
 public:
 	FSKMod();
 
-	void setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts, LedPorts_t ledPorts);
-	void setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts);
+	void setInputPorts(InputPorts_t inputPorts);
+	void setOutputPorts(OutputPorts_t outputPorts);
+	void setInterruptRequest(IRQs_t interrupts);
 
 	void reset(void);
 
