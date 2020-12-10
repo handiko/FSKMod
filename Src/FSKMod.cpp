@@ -51,8 +51,13 @@ void FSKMod::initGPIOOutputLevel(void)
 {
 	outputPorts.dataPort->ODR &= ~(GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
         						|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7);
+#if defined(BRR)
 	outputPorts.rstPort->BRR = outputPorts.rstPin;
 	outputPorts.clkPort->BRR = outputPorts.clkPin;
+#else
+	outputPorts.rstPort->ODR &= ~(outputPorts.rstPin);
+	outputPorts.clkPort->ODR &= ~(outputPorts.clkPin);
+#endif
 }
 
 void FSKMod::initConfigGPIOPinsOutput(void)
