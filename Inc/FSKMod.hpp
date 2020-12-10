@@ -8,8 +8,6 @@
 #ifndef INC_FSKMOD_HPP_
 #define INC_FSKMOD_HPP_
 
-#include "stm32g0xx.h"
-#include "stm32g0xx_hal.h"
 #include "main.h"
 
 #define RECEIVE_STATE 1
