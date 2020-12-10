@@ -9,6 +9,8 @@
 #define INC_FSKMOD_HPP_
 
 #include "main.h"
+#include "stm32g0xx.h"
+#include "stm32g0xx_hal.h"
 
 #define RECEIVE_STATE 1
 #define TRANSMIT_STATE 0
@@ -76,9 +78,9 @@ private:
 			0.499578530318103
 	};
 
-	InputPorts_t* inputPorts;
-	OutputPorts_t* outputPorts;
-	LedPorts_t* ledPorts;
+	InputPorts_t inputPorts;
+	OutputPorts_t outputPorts;
+	LedPorts_t ledPorts;
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
@@ -90,7 +92,7 @@ private:
 	void initGPIOOutputLevel(void);
 	void initConfigGPIOPinsOutput(void);
 	void initConfigGPIOPinsInput(void);
-
+	void initNVICInterrupt(void);
 	void init(void);
 	void delayPrimitive(uint32_t del);
 	void delay(void);
@@ -104,8 +106,8 @@ private:
 public:
 	FSKMod();
 
-	void setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts, LedPorts_t* ledPorts);
-	void setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts);
+	void setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts, LedPorts_t ledPorts);
+	void setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts);
 
 	void reset(void);
 

@@ -6,7 +6,6 @@
  */
 
 #include "FSKMod.hpp"
-#include "main.h"
 
 FSKMod::FSKMod() {
 	// TODO Auto-generated constructor stub
@@ -22,24 +21,24 @@ FSKMod::FSKMod() {
  */
 void FSKMod::initGPIOClock(void)
 {
-#ifdef GPIOA
+//#if defined(GPIOA)
 	__HAL_RCC_GPIOA_CLK_ENABLE();
-#endif
-#ifdef GPIOB
+//#endif
+//#ifdef GPIOB
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-#endif
-#ifdef GPIOC
+//#endif
+//#ifdef GPIOC
 	__HAL_RCC_GPIOC_CLK_ENABLE();
-#endif
-#ifdef GPIOD
+//#endif
+//#ifdef GPIOD
 	__HAL_RCC_GPIOD_CLK_ENABLE();
-#endif
-#ifdef GPIOE
+//#endif
+#if defined(GPIOE)
 	__HAL_RCC_GPIOE_CLK_ENABLE();
 #endif
-#ifdef GPIOF
+//#ifdef GPIOF
 	__HAL_RCC_GPIOF_CLK_ENABLE();
-#endif
+//#endif
 }
 
 void FSKMod::initGPIOOutputLevel(void)
@@ -65,38 +64,26 @@ void FSKMod::initConfigGPIOPinsOutput(void)
 	GPIO_InitStruct.Pin = outputPorts->rstPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-#ifdef GPIO_SPEED_FREQ_VERY_HIGH
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#endif
 	HAL_GPIO_Init(outputPorts->rstPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = outputPorts->fupPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-#ifdef GPIO_SPEED_FREQ_VERY_HIGH
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#endif
 	HAL_GPIO_Init(outputPorts->fupPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = outputPorts->clkPin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-#ifdef GPIO_SPEED_FREQ_VERY_HIGH
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#endif
 	HAL_GPIO_Init(outputPorts->clkPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3
 		        		|GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-#ifdef GPIO_SPEED_FREQ_VERY_HIGH
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-#endif
 	HAL_GPIO_Init(outputPorts->dataPort, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = ledPorts->ledTxPin;
@@ -144,13 +131,11 @@ void FSKMod::initConfigGPIOPinsInput(void)
 	HAL_GPIO_Init(inputPorts->bitsPort, &GPIO_InitStruct);
 }
 
-/*
 void FSKMod::initNVICInterrupt(void)
 {
 	HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 }
-*/
 
 void FSKMod::init(void)
 {
@@ -158,7 +143,7 @@ void FSKMod::init(void)
 	initGPIOOutputLevel();
 	initConfigGPIOPinsOutput();
 	initConfigGPIOPinsInput();
-	//initNVICInterrupt();
+	initNVICInterrupt();
 
 	pttState = readInitPTTState();
 }
@@ -244,7 +229,7 @@ void FSKMod::initWord(bool setChannel)
 /*
  * Public methods
  */
-void FSKMod::setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts, LedPorts_t* ledPorts)
+void FSKMod::setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts, LedPorts_t ledPorts)
 {
 	this->inputPorts = inputPorts;
 	this->outputPorts = outputPorts;
@@ -253,7 +238,7 @@ void FSKMod::setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* output
 	reset();
 }
 
-void FSKMod::setInputOutputPorts(InputPorts_t* inputPorts, OutputPorts_t* outputPorts)
+void FSKMod::setInputOutputPorts(InputPorts_t inputPorts, OutputPorts_t outputPorts)
 {
 	this->inputPorts = inputPorts;
 	this->outputPorts = outputPorts;
