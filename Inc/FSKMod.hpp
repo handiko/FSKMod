@@ -57,6 +57,11 @@ struct LedPorts_t {
 	uint16_t ledCHBPin;
 };
 
+struct IRQs_t {
+	IRQn_Type bitsIRQ;
+	IRQn_Type pttIRQ;
+};
+
 class FSKMod {
 private:
 	int sps = 1;
@@ -77,6 +82,8 @@ private:
 
 	InputPorts_t inputPorts;
 	OutputPorts_t outputPorts;
+
+	IRQs_t interrupts;
 
 	uint32_t freq = 1000000UL;
 	uint32_t freqCh[2] = {
@@ -104,6 +111,7 @@ public:
 
 	void setInputPorts(InputPorts_t inputPorts);
 	void setOutputPorts(OutputPorts_t outputPorts);
+	void setInterruptRequest(IRQs_t interrupts);
 
 	void reset(void);
 

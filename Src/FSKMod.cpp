@@ -119,8 +119,11 @@ void FSKMod::initConfigGPIOPinsInput(void)
 
 void FSKMod::initNVICInterrupt(void)
 {
-	HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
+	HAL_NVIC_SetPriority(interrupts.pttIRQ, 0, 0);
+	HAL_NVIC_EnableIRQ(interrupts.pttIRQ);
+
+	HAL_NVIC_SetPriority(interrupts.bitsIRQ, 0, 0);
+	HAL_NVIC_EnableIRQ(interrupts.bitsIRQ);
 }
 
 void FSKMod::init(void)
@@ -166,14 +169,14 @@ inline void FSKMod::writeWord(uint8_t word)
 {
 	outputPorts.dataPort->BSRR = ((uint32_t)word) + (~(((uint32_t)word) << 16));
 	outputPorts.clkPort->ODR ^= outputPorts.clkPin;
-	delay();
+	//delay();
 	outputPorts.clkPort->ODR ^= outputPorts.clkPin;
 }
 
 inline void FSKMod::updateFreq(void)
 {
 	outputPorts.fupPort->ODR ^= outputPorts.fupPin;
-	delay();
+	//delay();
 	outputPorts.fupPort->ODR ^= outputPorts.fupPin;
 }
 
@@ -226,6 +229,13 @@ void FSKMod::setInputPorts(InputPorts_t inputPorts)
 void FSKMod::setOutputPorts(OutputPorts_t outputPorts)
 {
 	this->outputPorts = outputPorts;
+
+	reset();
+}
+
+void FSKMod::setInterruptRequest(IRQs_t interrupts)
+{
+	this->interrupts = interrupts;
 
 	reset();
 }
