@@ -127,10 +127,6 @@ public:
 	void setChAFreq(uint32_t freqA);
 	void setChBFreq(uint32_t freqB);
 
-	void setTxLed(void);
-	void setDataLed(bool LED_STATE);
-	void setChannelLed(void);
-
 	virtual ~FSKMod();
 };
 

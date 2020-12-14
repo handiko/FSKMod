@@ -358,46 +358,6 @@ void FSKMod::setChBFreq(uint32_t freqB)
 	initWord(CHANNEL_B);
 }
 
-void FSKMod::setTxLed(void)
-{
-	if(pttState == TRANSMIT_STATE)
-	{
-		ledPorts->ledTxPort->BSRR = ledPorts->ledTxPin;
-	}
-	else
-	{
-		ledPorts->ledTxPort->BRR = ledPorts->ledTxPin;
-	}
-}
-
-void FSKMod::setDataLed(bool LED_STATE)
-{
-	if(LED_STATE == LED_ON)
-	{
-		ledPorts->ledDataPort->BSRR = ledPorts->ledDataPin;
-	}
-	else
-	{
-		ledPorts->ledDataPort->BRR = ledPorts->ledDataPin;
-	}
-}
-
-void FSKMod::setChannelLed(void)
-{
-	if(pttState == TRANSMIT_STATE)
-	{
-		if(channel == CHANNEL_A)
-			ledPorts->ledChaPort->BSRR = ledPorts->ledChaPin;
-		else
-			ledPorts->ledChbPort->BSRR = ledPorts->ledChbPin;
-	}
-	else
-	{
-		ledPorts->ledChaPort->BRR = ledPorts->ledChaPin;
-		ledPorts->ledChbPort->BRR = ledPorts->ledChbPin;
-	}
-}
-
 FSKMod::~FSKMod() {
 	// TODO Auto-generated destructor stub
 }
