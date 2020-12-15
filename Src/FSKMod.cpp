@@ -10,10 +10,6 @@
 FSKMod::FSKMod() {
 	// TODO Auto-generated constructor stub
 	reset();
-
-	setChAFreq(161975000UL);
-	setChBFreq(162025000UL);
-	setIdleFreq(1000000UL);
 }
 
 /*
