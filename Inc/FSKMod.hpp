@@ -23,25 +23,25 @@
 #define DDS_CONST 4294967296ULL
 
 struct InputPorts_t {
-	GPIO_TypeDef* bitsPort;
-	GPIO_TypeDef* pttPort;
-	GPIO_TypeDef* freqPort;
+	GPIO_TypeDef* bitsPort = BITS_GPIO_Port;
+	GPIO_TypeDef* pttPort = PTT_GPIO_Port;
+	GPIO_TypeDef* freqPort = FREQ_GPIO_Port;
 
-	uint16_t bitsPin;
-	uint16_t pttPin;
-	uint16_t freqPin;
+	uint16_t bitsPin = BITS_Pin;
+	uint16_t pttPin = PTT_Pin;
+	uint16_t freqPin = FREQ_Pin;
 };
 
 struct OutputPorts_t {
-	GPIO_TypeDef* dataPort;
-	GPIO_TypeDef* rstPort;
-	GPIO_TypeDef* fupPort;
-	GPIO_TypeDef* clkPort;
+	GPIO_TypeDef* dataPort = DATA_GPIO_Port;
+	GPIO_TypeDef* rstPort = RST_GPIO_Port;
+	GPIO_TypeDef* fupPort = FUP_GPIO_Port;
+	GPIO_TypeDef* clkPort = CLK_GPIO_Port;
 
-	uint16_t dataPin;
-	uint16_t rstPin;
-	uint16_t fupPin;
-	uint16_t clkPin;
+	uint16_t dataPin = DATA_Pin;
+	uint16_t rstPin = RST_Pin;
+	uint16_t fupPin = FUP_Pin;
+	uint16_t clkPin = CLK_Pin;
 };
 
 // TODO not implemented yet
@@ -58,8 +58,8 @@ struct LedPorts_t {
 };
 
 struct IRQs_t {
-	IRQn_Type bitsIRQ;
-	IRQn_Type pttIRQ;
+	IRQn_Type bitsIRQ = BITS_EXTI_IRQn;
+	IRQn_Type pttIRQ = PTT_EXTI_IRQn;
 };
 
 class FSKMod {
